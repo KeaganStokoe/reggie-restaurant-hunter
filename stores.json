@@ -1,0 +1,57 @@
+[
+  {
+    "name": "Japanika",
+    "description": "Colorful Japanika offers a variety of sushi rolls, salads, and noodle dishes, including their popular Pad Thai Japanika. The history of Japanika started in 2004 winter in Tel Aviv, when a young couple...",
+    "cuisine": "Japanese"
+  },
+  {
+    "name": "Pitpit",
+    "description": "Pitpit is a cozy restaurant located in Budapest, Hungary. They offer a variety of dishes with a focus on Mediterranean cuisine. The atmosphere is warm and inviting, making it a great spot for a date or a night out with friends.",
+    "cuisine": "Mediterranean"
+  },
+  {
+    "name": "Fat Mama",
+    "description": "Fat Mama is a popular restaurant in Budapest, known for its delicious Italian cuisine and cozy atmosphere. The menu features a variety of pasta dishes, pizzas, and salads, as well as a selection of wines and cocktails. The restaurant is located on Kazinczy Street in the heart of the city.",
+    "cuisine": "Italian"
+  },
+  {
+    "name": "Vapiano",
+    "description": "Vapiano is a popular hang-out in Budapest, specialising in fresh pasta, pizza, and salads in a beautiful, laid back restaurant.",
+    "cuisine": "Italian"
+  },
+  {
+    "name": "Twenty Six",
+    "description": "Cool, plant-filled venue with a Mediterranean eatery, plus workshops & yoga classes.",
+    "cuisine": "Mediterranean"
+  },
+  {
+    "name": "Cafe Astoria Restaurant",
+    "description": "Cafe Astoria Restaurant is an elegant venue with chandeliers and white tablecloths, offering Hungarian cuisine and champagne afternoon tea. It is located within the Astoria Hotel in Budapest.",
+    "cuisine": "Hungarian"
+  },
+  {
+    "name": "Kinai Etterem Gyors Bufe",
+    "description": "Kinai Etterem Gyors Bufe is a Chinese restaurant in Budapest that offers quick and affordable meals. The restaurant has received positive reviews for its tasty food and friendly service.",
+    "cuisine": "Chinese"
+  },
+  {
+    "name": "aran bakery",
+    "description": "aran bakery is a well-designed bakery located in the popular 7th district of budapest. they offer a variety of cakes and baked goods.",
+    "cuisine": "bakery"
+  },
+  {
+    "name": "la movida",
+    "description": "la movida is a mexican bites and cocktails bar located in budapest, hungary. the chic and cozy space is decorated with colorful decor, bar seats, and plants overhead.",
+    "cuisine": "mexican"
+  },
+  {
+    "name": "pointer pubs",
+    "description": "pointer pubs is a pub and restaurant located in budapest, hungary. they offer a variety of food and drinks, and are open from noon until midnight on most days.",
+    "cuisine": "pub and restaurant"
+  },
+  {
+    "name": "bamba marha burger bar",
+    "description": "bamba marha burger bar is a popular burger joint in budapest, known for their fresh, locally sourced ingredients and unique burger combinations. they have received high ratings on tripadvisor and are ranked #99 out of 3893 restaurants in budapest.",
+    "cuisine": "burgers"
+  }
+]
