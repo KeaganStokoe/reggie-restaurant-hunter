@@ -1,0 +1,15 @@
+# Exclude .env file
+.env
+
+# Exclude virtual env folder named myvenv
+myvenv/
+
+# Exclude IPython notebooks
+*.ipynb
+
+# Cache directories
+__pycache__/
+
+#Other
+todo.md
+test.py
