@@ -1,9 +1,11 @@
-import json
-from fuzzywuzzy import fuzz
-from spellchecker import SpellChecker
-from typing import List
+from datetime import datetime
+import pytz
 
-def get_establishments(user_input: str) -> List[str]:
+import json
+from fuzzywuzzy import fuzz, process
+from spellchecker import SpellChecker
+
+def get_establishments(user_input: str) -> str:
     """
     Searches a JSON file of establishments using fuzzy string matching.
 
@@ -11,8 +13,7 @@ def get_establishments(user_input: str) -> List[str]:
         user_input: A string representing the user's search query.
 
     Returns:
-        A list of strings representing the names of the establishments that match the 
-        search query.
+        A string representing the establishments that match the search query, formatted as a numbered list.
     """
 
     # Load JSON data
@@ -22,25 +23,28 @@ def get_establishments(user_input: str) -> List[str]:
     # Create spell checker instance
     spell = SpellChecker()
 
-    # Define search function
-    def fuzzy_search(query_text):
-        # Define fields to search
-        fields = ['name', 'description', 'cuisine']
+    # Define function to fuzzy search list of dictionaries based on multiple fields
+    def fuzzy_search(query_text, list_of_dicts):
+        query_text = query_text.lower().strip()
+        fields = ['name', 'description', 'cuisines', 'category']
 
-        # Use process.extractBests to find matching documents
-        matches = []
-        for doc in data:
-            score = max([fuzz.token_set_ratio(query_text.lower(), 
-                                              doc[field].lower()) for field in fields])
-            if score > 70:
-                matches.append((doc, score))
+        def search_dict(search_string, my_dict):
+            for field in fields:
+                if field not in my_dict:
+                    continue
+                if search_string in my_dict[field]:
+                    return True
+            return False
+        
+        ratio_threshold = 70
+        matches = [x for x in list_of_dicts if search_dict(query_text, x) or
+                   (fuzz.token_set_ratio(query_text, x[field]) >= ratio_threshold
+                    if (field in x and x[field] is not None) else False
+                    for field in fields)]
+        matches = sorted(matches, key=lambda x: fuzz.token_set_ratio(query_text, x['name']), reverse=True)
+        return [match for match in matches]
 
-        # Sort matches by score
-        matches = sorted(matches, key=lambda x: x[1], reverse=True)
-
-        return [match[0] for match in matches]
-
-    # Define function to generate alternative searches
+   # Define function to generate alternative searches
     def generate_alternatives(query_text):
         # Split query text into words
         words = query_text.split()
@@ -63,29 +67,70 @@ def get_establishments(user_input: str) -> List[str]:
                     if corrected_alternative not in alternatives:
                         spell_alternatives.append(corrected_alternative)
 
-        return alternatives + spell_alternatives
+        # Generate lists of establishments that match each alternative query
+        establishment_lists = []
+        for alt_query in alternatives + spell_alternatives:
+            try:
+                establishment_lists.append(fuzzy_search(alt_query, data))
+            except (TypeError, ValueError):
+                pass
 
-    # Search for matching documents
-    query = user_input
-    results = fuzzy_search(query)
+        # Flatten the list of establishment lists into a single list of establishments
+        flattened_list = [establishment for sublist in establishment_lists for establishment in sublist]
 
-    # Generate alternative searches if no results are found
-    if len(results) == 0:
-        alternatives = generate_alternatives(query)
-        for alternative in alternatives:
-            results = fuzzy_search(alternative)
-            if len(results) > 0:
-                break
+        # Remove duplicates from the list of establishments
+        final_list = [dict(tupleized) for tupleized in set(tuple(establishment.items()) for establishment in flattened_list)]
 
-    # Format matching documents as a numbered list
-    formatted_results = []
-    for i, result in enumerate(results):
-        if i >= 3:
-            break
-        formatted_result = f"{i+1}. {result['name']} ({result['cuisine']}): {result['description']} \n"  # noqa: E501
-        formatted_results.append(formatted_result)
+        return final_list
+    
+    # Find list of matching establishments
+    matching_establishments = fuzzy_search(user_input, data)
+    if not matching_establishments:
+        # Look for exact name match case-insensitively
+        matching_establishments = [establishment for establishment in data if establishment['name'].lower() == user_input.lower()]
+        # If no exact name match, look for partial matches based on fuzzy search of multiple fields
+        if not matching_establishments:
+            alt_establishments = generate_alternatives(user_input)
+            # Filter establishments to only include matches that have a name
+            alt_establishments = [establishment for establishment in alt_establishments if 'name' in establishment]
+            matching_establishments = fuzzy_search(user_input, alt_establishments)
+            if not matching_establishments:
+                # If no matching establishments were found, return an empty list
+                return 'No matches found.'
+            
+    # Format results as a numbered list
+    final_strings = []
+    for i, establishment in enumerate(matching_establishments[:1]):
+        name = establishment['name']
+        cuisine = ', '.join(establishment.get('cuisines', []))
+        rating = establishment.get('rating', '-')
+        website = establishment.get('website', '-')
+        formatted_hours = '-'
+        # Get opening hours for the current day of week (in user's timezone)
+        now = datetime.now(pytz.utc).astimezone()
+        weekday = now.strftime('%A')
+        hours_data = establishment.get('hours', {})
+        if hours_data:
+            hours_today = next((hours for hours in hours_data if 'weekday_text' in hours and weekday in hours['weekday_text']), {})            
+            hours_text = hours_today.get('open', '-') + ' - ' + hours_today.get('close', '-') if hours_today else '-'
+            formatted_hours = f'Open today {hours_text}'
+        # Construct the formatted string for this establishment
+        numbered_name = f'{i+1}. 🍔 {" ".join(word.capitalize() for word in name.split())}:'
+        numbered_cuisine = f'🍽️ Cuisine: {cuisine.capitalize()}'
+        numbered_rating = f'⭐️ Rating: {rating}'
+        numbered_website = f'👾 Website: {website}'
+        numbered_hours = f'🕥 Hours: {formatted_hours}'
+        
+        formatted_establishment = '\n'.join([
+            numbered_name,
+            numbered_cuisine, numbered_rating, numbered_website, numbered_hours])
+        final_strings.append(formatted_establishment)
+
+    # If no matching establishments were found,
+    if not final_strings:
+        return 'No matches found.'
 
     # Create final string by joining formatted results
-    final_string = "\n".join(formatted_results)
+    final_string = '\n\n'.join(final_strings)
 
     return final_string
