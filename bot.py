@@ -1,7 +1,7 @@
 import telebot
 from dotenv import load_dotenv
 from os import getenv
-from manage_establishments import add_establishment
+from add_establishment import add_location
 from get_establishments import get_establishments
 
 # Load environmental variables
@@ -26,8 +26,8 @@ def add_establishment_process_step(message):
     establishment_name = message.text
 
     try:
-        bot.reply_to(message, "👨‍🍳 Chef's kiss! 🤤 I'm adding it to your list. I'll pop you a message as soon as I'm done 🤞")
-        add_establishment(establishment_name)
+        bot.reply_to(message, "👨‍🍳 Chef's kiss! 🤤 I'm adding it to your list. I'll pop you a message when I'm done 🤞")
+        add_location(establishment_name)
         bot.reply_to(message, f"🙌 {establishment_name} has been added to your list!")
     except Exception as e:
         # Send an error message back to the user
@@ -50,12 +50,13 @@ def search_process_step(message):
         if establishments:
             bot.reply_to(message, f"👀 Whoa! Look at all these restaurants with '{establishment_name}' in them! 😲\n\n{establishments}")
         else:
-            bot.reply_to(message, f"👎 Golly gee, {establishment_name} doesn't appear to be in my list. 👻")
+            bot.reply_to(message, f"👎 Hmm, {establishment_name} doesn't appear to be on the list. 👻")
     except Exception as e:
         # Send an error message back to the user
         bot.reply_to(message, "Oops! 🙊 Something went wrong when I tried searching for this restaurant. Try again later?")
-        # Print the error message to the console for debugging
-        print(f"An error occurred while searching for {establishment_name}: {e}")
+        # Print the error message with traceback information to the console for debugging
+        import traceback
+        traceback.print_exc()
 
 # Call bot.polling in a try-Except block to prevent the code from crashing
 if __name__ == "__main__":

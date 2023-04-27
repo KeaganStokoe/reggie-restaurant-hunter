@@ -158,45 +158,29 @@ def get_location_details(location_id: str) -> Dict:
     location_id (str): location ID for the desired location.
 
     Returns:
-    results (Dict): dictionary containing values for description, website,
-        rating, phone, longitude, latitude, cuisines, category, opening hours, 
-        and address string.
+    results (Dict): dictionary containing values for name, description,
+        address_string, website, rating, phone, longitude, latitude, cuisines,
+        category, and hours.
     """
-    url = f"https://api.content.tripadvisor.com/api/v1/location/{location_id}/details?key={TRIPADVISOR_API_KEY}&language=en&fields=name,description,website,rating,phone,longitude,latitude,cuisine,category,opening_hours,address_obj"  # noqa: E501
+    url = f"https://api.content.tripadvisor.com/api/v1/location/{location_id}/details?key={TRIPADVISOR_API_KEY}&language=en&fields=name,description,website,rating,phone,longitude,latitude,cuisine,category,hours,address_obj"
     headers = {"accept": "application/json"}
     response = requests.get(url, headers=headers)
     data = response.json()
-    
+
     # Extract required fields from data
-    name = data['name']
-    description = data['description']
-    website = data['website']
-    address_string = data['address_obj']['address_string']
-    rating = data['rating']
-    phone = data['phone']
-    longitude = data['longitude']
-    latitude = data['latitude']
-    cuisines = [cuisine['name'] for cuisine in data['cuisine']]
-    category = data['category']['localized_name']
-    hours = data['hours']['weekday_text']
-    
-    # Assemble the results dictionary and return
-    results = {
-        "name": name,
-        "description": description,
-        "address_string": address_string,
-        "website": website,
-        "rating": rating,
-        "phone": phone,
-        "longitude": longitude,
-        "latitude": latitude,
-        "cuisines": cuisines,
-        "category": category,
-        "hours": hours
-    }
-    
-    print(type(results))
-    return results
+    results = {"name": data.get("name"),
+               "description": data.get("description"),
+               "address_string": data.get("address_obj", {}).get("address_string"),
+               "website": data.get("website"),
+               "rating": data.get("rating"),
+               "phone": data.get("phone"),
+               "longitude": data.get("longitude"),
+               "latitude": data.get("latitude"),
+               "cuisines": [cuisine.get("name") for cuisine in data.get("cuisine", [])],
+               "category": data.get("category", {}).get("localized_name"),
+               "hours": data.get("hours", {}).get("weekday_text")}
+
+    return results 
 
 def write_establishment_to_json_file(new_data: Dict):
     # Convert all text in the new data to lowercase

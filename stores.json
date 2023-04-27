@@ -76,5 +76,28 @@
       "Saturday: 08:00 - 00:00",
       "Sunday: 08:00 - 00:00"
     ]
+  },
+  {
+    "name": "bamba marha burger bar",
+    "description": null,
+    "address_string": "andrassy ut 46., budapest 1062 hungary",
+    "website": "http://www.bambamarha.hu",
+    "rating": "4.5",
+    "phone": "+36 1 952 2323",
+    "longitude": "19.062704",
+    "latitude": "47.50488",
+    "cuisines": [
+      "american"
+    ],
+    "category": "restaurant",
+    "hours": [
+      "Monday: 11:30 - 22:00",
+      "Tuesday: 11:30 - 22:00",
+      "Wednesday: 11:30 - 22:00",
+      "Thursday: 11:30 - 22:00",
+      "Friday: 11:30 - 22:00",
+      "Saturday: 11:30 - 22:00",
+      "Sunday: 11:30 - 22:00"
+    ]
   }
 ]
