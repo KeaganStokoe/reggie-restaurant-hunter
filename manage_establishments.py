@@ -31,15 +31,9 @@ def get_location_name(user_input: str):
     ]
 
     # Set up the base template
-    template = """You are an assistant that helps foodies manage and track bars, restaurants, cafes, coffee shops and other establishments they encounter and want to remember. 
+    template = """You're given the name of a restaurant by a user. It may be correct, but it will most likely contain a few errors. 
 
-    The user will send you the name of an establishment. If the user fails to specify the city they're in, assume the user is in Budapest, Hungary. 
-
-    The name provided by the user may not be entirely accurate. You are responsible for using the tools at your disposal to figure out the establishment the user is referring to.  
-
-    Once you've identified the name, return is as the final answer.
-
-    You have access to the following tools:
+    Use the tools at your disposal to determine the name of the restaurant the user is referring to. If you are reasonably confident, proceed to providing the answer.
 
     {tools}
 
@@ -50,14 +44,13 @@ def get_location_name(user_input: str):
     Action: the action to take
     Action Input: the input to the action
     Observation: the result of the action
-    ... (this Thought/Action/Action Input/Observation can repeat N times and should repeat until you have all the required information)
+    ... (this Thought/Action/Action Input/Observation can repeat 3 times or until you have all the required information, whichever comes sooner)
     Thought: I now know the final answer
-    Final Answer: the final answer should be a string containing the name of the establishment
+    Final Answer: the final answer should be the name of the establishment, with no additional information
 
     ---
 
     Begin! 
-
     User input: {input}
     {agent_scratchpad}"""  # noqa: E501
 
@@ -97,7 +90,7 @@ def get_location_name(user_input: str):
         
         def parse(self, llm_output: str) -> Union[AgentAction, AgentFinish]:
             # Check if agent should finish
-            if "Final Answer" in llm_output:
+            if ("Final Answer") in llm_output:
                 return AgentFinish(
                     # Return value is a dictionary with a single `output` key
                     # It is not recommended to try anything else at the moment :)
@@ -138,13 +131,12 @@ def get_location_name(user_input: str):
 
     response = agent_executor.run(user_input)
 
-    print(response)
+    return response
 
-
-def get_location_id(search_query="mazel tov", category="restaurants", address="budapest"):
+def get_location_id(search_query, category="restaurants", address="budapest"):  # noqa: E501
 
     # Set the endpoint URL with the updated key parameter and search query
-    url = f"https://api.content.tripadvisor.com/api/v1/location/search?key={TRIPADVISOR_API_KEY}&searchQuery={search_query}&category={category}&address={address}&language=en"
+    url = f"https://api.content.tripadvisor.com/api/v1/location/search?key={TRIPADVISOR_API_KEY}&searchQuery={search_query}&category={category}&address={address}&language=en"  # noqa: E501
 
     # Set the request headers
     headers = {"accept": "application/json"}
@@ -170,12 +162,13 @@ def get_location_details(location_id: str) -> Dict:
         rating, phone, longitude, latitude, cuisines, category, opening hours, 
         and address string.
     """
-    url = f"https://api.content.tripadvisor.com/api/v1/location/{location_id}/details?key={TRIPADVISOR_API_KEY}&language=en&fields=description,website,rating,phone,longitude,latitude,cuisine,category,opening_hours,address_obj"
+    url = f"https://api.content.tripadvisor.com/api/v1/location/{location_id}/details?key={TRIPADVISOR_API_KEY}&language=en&fields=name,description,website,rating,phone,longitude,latitude,cuisine,category,opening_hours,address_obj"  # noqa: E501
     headers = {"accept": "application/json"}
     response = requests.get(url, headers=headers)
     data = response.json()
     
     # Extract required fields from data
+    name = data['name']
     description = data['description']
     website = data['website']
     address_string = data['address_obj']['address_string']
@@ -189,6 +182,7 @@ def get_location_details(location_id: str) -> Dict:
     
     # Assemble the results dictionary and return
     results = {
+        "name": name,
         "description": description,
         "address_string": address_string,
         "website": website,
@@ -201,26 +195,36 @@ def get_location_details(location_id: str) -> Dict:
         "hours": hours
     }
     
-    print(results)
+    print(type(results))
     return results
 
-def write_establishment_to_json_file(response):
-
-    with open('stores.json', 'r') as f:
-        data = json.load(f)
-
-    # Parse the response string
-    new_data = json.loads(response)
-
-    # Convert all text to lowercase
+def write_establishment_to_json_file(new_data: Dict):
+    # Convert all text in the new data to lowercase
     new_data = {key: value.lower() if isinstance(value, str) else value for key, 
                 value in new_data.items()}
 
-    # Append the new data to the existing data
+    # Load existing data (if any)
+    try:
+        with open('stores.json', 'r') as f:
+            data = json.load(f)
+    except json.JSONDecodeError:
+        # If the file doesn't exist yet, start with an empty list
+        data = []
+
+    # Append the new item to the list
     data.append(new_data)
 
-    # Write the updated data back to stores.json
+    # Write the updated data (with indentation)
     with open('stores.json', 'w') as f:
         json.dump(data, f, indent=2)
 
     print('Data updated')
+
+def add_location(user_input:str):
+    name = get_location_name(user_input)
+    print(f"Name retrieved - {name}")
+    location_id = get_location_id(search_query=name)
+    print(f"ID retrieved - {location_id}")
+    location_details = get_location_details(location_id)
+    print("Details retrieved")
+    write_establishment_to_json_file(location_details)

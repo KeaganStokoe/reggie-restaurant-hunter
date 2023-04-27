@@ -1,57 +1,80 @@
 [
   {
-    "name": "Japanika",
-    "description": "Colorful Japanika offers a variety of sushi rolls, salads, and noodle dishes, including their popular Pad Thai Japanika. The history of Japanika started in 2004 winter in Tel Aviv, when a young couple...",
-    "cuisine": "Japanese"
+    "name": "mazel tov",
+    "description": "mazel tov is an open hearted cultural space in the city's center, a streamlined and comforting place focusing on gastronomy in the 7th district, in the middle of the historically jewish quarter. our middle eastern urban garden awaits its quests seven days a week from noon until midnight: mazel tov! ps: please note that our restaurant is not a kosher restaurant. hope to see you soon, mazel tov team",
+    "address_string": "akacfa utca 47., budapest 1073 hungary",
+    "website": "http://mazeltov.hu",
+    "rating": "4.0",
+    "phone": "+36 70 626 4280",
+    "longitude": "19.06584",
+    "latitude": "47.500423",
+    "cuisines": [
+      "mediterranean",
+      "healthy",
+      "middle_eastern",
+      "israeli"
+    ],
+    "category": "restaurant",
+    "hours": [
+      "Monday: 12:00 - 00:00",
+      "Tuesday: 12:00 - 00:00",
+      "Wednesday: 12:00 - 00:00",
+      "Thursday: 12:00 - 00:00",
+      "Friday: 12:00 - 00:00",
+      "Saturday: 12:00 - 00:00",
+      "Sunday: 12:00 - 00:00"
+    ]
   },
   {
-    "name": "Pitpit",
-    "description": "Pitpit is a cozy restaurant located in Budapest, Hungary. They offer a variety of dishes with a focus on Mediterranean cuisine. The atmosphere is warm and inviting, making it a great spot for a date or a night out with friends.",
-    "cuisine": "Mediterranean"
+    "name": "twentysix",
+    "description": "twentysix budapest is the first of its kind, a cozy urban jungle and feel-good hub for all the nature and gastro friends located in the real heart of budapest with 4 elements. garden\u00b0 is a nutritious, soulful mediterranean restaurant. shop\u00b0 is our zero waste coffee & shop, an eco-friendly gourmet delicates. studio\u00b0 where you can enjoy every day our yoga classes. house\u00b0 brings a unique concept of kitchen workshops and space for tailored events. all in one bright, sunlit scene of the vivid budapest downtown - where your body, mind, soul and coolness meet.",
+    "address_string": "kiraly utca 26, budapest 1061 hungary",
+    "website": "http://www.twentysixbudapest.com",
+    "rating": "4.0",
+    "phone": "+36 70 395 6129",
+    "longitude": "19.058748",
+    "latitude": "47.49958",
+    "cuisines": [
+      "mediterranean",
+      "healthy",
+      "middle_eastern",
+      "european",
+      "contemporary"
+    ],
+    "category": "restaurant",
+    "hours": [
+      "Monday: 07:30 - 23:45",
+      "Tuesday: 07:30 - 23:45",
+      "Wednesday: 07:30 - 23:45",
+      "Thursday: 07:30 - 23:45",
+      "Friday: 07:30 - 23:45",
+      "Saturday: 07:30 - 23:45",
+      "Sunday: 07:30 - 23:45"
+    ]
   },
   {
-    "name": "Fat Mama",
-    "description": "Fat Mama is a popular restaurant in Budapest, known for its delicious Italian cuisine and cozy atmosphere. The menu features a variety of pasta dishes, pizzas, and salads, as well as a selection of wines and cocktails. The restaurant is located on Kazinczy Street in the heart of the city.",
-    "cuisine": "Italian"
-  },
-  {
-    "name": "Vapiano",
-    "description": "Vapiano is a popular hang-out in Budapest, specialising in fresh pasta, pizza, and salads in a beautiful, laid back restaurant.",
-    "cuisine": "Italian"
-  },
-  {
-    "name": "Twenty Six",
-    "description": "Cool, plant-filled venue with a Mediterranean eatery, plus workshops & yoga classes.",
-    "cuisine": "Mediterranean"
-  },
-  {
-    "name": "Cafe Astoria Restaurant",
-    "description": "Cafe Astoria Restaurant is an elegant venue with chandeliers and white tablecloths, offering Hungarian cuisine and champagne afternoon tea. It is located within the Astoria Hotel in Budapest.",
-    "cuisine": "Hungarian"
-  },
-  {
-    "name": "Kinai Etterem Gyors Bufe",
-    "description": "Kinai Etterem Gyors Bufe is a Chinese restaurant in Budapest that offers quick and affordable meals. The restaurant has received positive reviews for its tasty food and friendly service.",
-    "cuisine": "Chinese"
-  },
-  {
-    "name": "aran bakery",
-    "description": "aran bakery is a well-designed bakery located in the popular 7th district of budapest. they offer a variety of cakes and baked goods.",
-    "cuisine": "bakery"
-  },
-  {
-    "name": "la movida",
-    "description": "la movida is a mexican bites and cocktails bar located in budapest, hungary. the chic and cozy space is decorated with colorful decor, bar seats, and plants overhead.",
-    "cuisine": "mexican"
-  },
-  {
-    "name": "pointer pubs",
-    "description": "pointer pubs is a pub and restaurant located in budapest, hungary. they offer a variety of food and drinks, and are open from noon until midnight on most days.",
-    "cuisine": "pub and restaurant"
-  },
-  {
-    "name": "bamba marha burger bar",
-    "description": "bamba marha burger bar is a popular burger joint in budapest, known for their fresh, locally sourced ingredients and unique burger combinations. they have received high ratings on tripadvisor and are ranked #99 out of 3893 restaurants in budapest.",
-    "cuisine": "burgers"
+    "name": "fat mama",
+    "description": "we are proud to be the first restaurant in budapest to use bertha in our kitchen. bertha is a charcoal oven that creates a special atmosphere in the restaurant. you feel like participating in a memorable garden party and in the hand of a well trained chef, bertha produces super tasty, crispy food let it be veggies, meat or fish. fat mama eatery is the only restaurant in the city center that has a real smoker pit available 24/7. our smoker pit was provided by the uncrowned king of hungarian bbq, m\u00e1riusz adorj\u00e1nyi. we prepare traditional bbq food in it meaning long hours of preparation at low temperature. the perfectly cooked, soft and juicy slices of meat can be enjoyed in a cool and easy-going environment.",
+    "address_string": "kazinczy utca 24., budapest 1075 hungary",
+    "website": "http://fatmama.hu",
+    "rating": "4.0",
+    "phone": "+36 20 235 1897",
+    "longitude": "19.062798",
+    "latitude": "47.49784",
+    "cuisines": [
+      "bar",
+      "international",
+      "gastropub"
+    ],
+    "category": "restaurant",
+    "hours": [
+      "Monday: 08:00 - 00:00",
+      "Tuesday: 08:00 - 00:00",
+      "Wednesday: 08:00 - 00:00",
+      "Thursday: 08:00 - 00:00",
+      "Friday: 08:00 - 00:00",
+      "Saturday: 08:00 - 00:00",
+      "Sunday: 08:00 - 00:00"
+    ]
   }
 ]
