@@ -106,25 +106,30 @@ def get_establishments(user_input: str) -> str:
         rating = establishment.get('rating', '-')
         website = establishment.get('website', '-')
         formatted_hours = '-'
+        
         # Get opening hours for the current day of week (in user's timezone)
         now = datetime.now(pytz.utc).astimezone()
         weekday = now.strftime('%A')
-        hours_data = establishment.get('hours', {})
-        if hours_data:
-            hours_today = next((hours for hours in hours_data if 'weekday_text' in hours and weekday in hours['weekday_text']), {})            
-            hours_text = hours_today.get('open', '-') + ' - ' + hours_today.get('close', '-') if hours_today else '-'
-            formatted_hours = f'Open today {hours_text}'
+        hours_data = establishment.get('hours', [])
+        hours_list = []
+        for hours_string in hours_data:
+            day_string, hours_string = hours_string.split(': ')
+            if weekday in day_string:
+                formatted_hours = hours_string
+            hours_list.append(f'{day_string.capitalize()}: {hours_string}')
+        formatted_hours = '\n'.join(hours_list)
+
         # Construct the formatted string for this establishment
         numbered_name = f'{i+1}. 🍔 {" ".join(word.capitalize() for word in name.split())}:'
         numbered_cuisine = f'🍽️ Cuisine: {cuisine.capitalize()}'
         numbered_rating = f'⭐️ Rating: {rating}'
         numbered_website = f'👾 Website: {website}'
         numbered_hours = f'🕥 Hours: {formatted_hours}'
-        
-        formatted_establishment = '\n'.join([
-            numbered_name,
-            numbered_cuisine, numbered_rating, numbered_website, numbered_hours])
-        final_strings.append(formatted_establishment)
+    
+    formatted_establishment = '\n'.join([
+        numbered_name,
+        numbered_cuisine, numbered_rating, numbered_website, numbered_hours])
+    final_strings.append(formatted_establishment)
 
     # If no matching establishments were found,
     if not final_strings:
