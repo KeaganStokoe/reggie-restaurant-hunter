@@ -1,10 +1,11 @@
 from langchain.agents import Tool, AgentExecutor, LLMSingleActionAgent, AgentOutputParser  # noqa: E501
 from langchain.prompts import BaseChatPromptTemplate
 from langchain import SerpAPIWrapper, LLMChain
-from typing import List, Union
+from typing import List, Union, Dict
 from langchain.schema import AgentAction, AgentFinish, HumanMessage
 from langchain.chat_models import ChatOpenAI
 import re
+import requests
 import json
 import os
 from dotenv import load_dotenv
@@ -13,8 +14,10 @@ load_dotenv()
 
 SERPAPI_API_KEY = os.environ.get("SERPAPI_API_KEY")
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+TRIPADVISOR_API_KEY = os.getenv("TRIPADVISOR_API_KEY")
 
-def add_establishment(user_input: str):
+def get_location_name(user_input: str):
+
     # Define which tools the agent can use to answer user queries
     search = SerpAPIWrapper(serpapi_api_key=SERPAPI_API_KEY)
 
@@ -22,21 +25,19 @@ def add_establishment(user_input: str):
         Tool(
             name = "Search",
             func=search.run,
-            description=f"""useful for when you need to retrieve information about a 
-            bar, restaurant or coffee shop that you don't have knowledge of. 
-            Useful if you have established the name of the restaurant and need to find 
-            the address, phone number, or website."""  # noqa: F541
+            description=f"""useful for when you need to retrieve the name of a location
+              (restaurant, bar, coffee shop, cafe)"""  # noqa: F541
         ),
     ]
 
     # Set up the base template
-    template = """You are MichellinGPT. You help the user keep track of bars, restaurants, cafes, coffee shops and any other establishments they encounter and want to try. 
+    template = """You are an assistant that helps foodies manage and track bars, restaurants, cafes, coffee shops and other establishments they encounter and want to remember. 
 
-    The user will send you the name of a restaurant, bar or coffee shop and the city they are in. If the user fails to provide a city, assume the user is in Budapest, Hungary. 
+    The user will send you the name of an establishment. If the user fails to specify the city they're in, assume the user is in Budapest, Hungary. 
 
-    The name provided by the user may not be entirely accurate. You will search using the name provided and attempt to locate the establishment. 
+    The name provided by the user may not be entirely accurate. You are responsible for using the tools at your disposal to figure out the establishment the user is referring to.  
 
-    If you find something similar, assume that it is the correct establishment. Do not ask the user for input. Assume that you are correct and proceeed.
+    Once you've identified the name, return is as the final answer.
 
     You have access to the following tools:
 
@@ -51,7 +52,7 @@ def add_establishment(user_input: str):
     Observation: the result of the action
     ... (this Thought/Action/Action Input/Observation can repeat N times and should repeat until you have all the required information)
     Thought: I now know the final answer
-    Final Answer: the final answer should be provided in JSON format and should include the name, verbose one paragraph description, and cusisine.
+    Final Answer: the final answer should be a string containing the name of the establishment
 
     ---
 
@@ -137,9 +138,74 @@ def add_establishment(user_input: str):
 
     response = agent_executor.run(user_input)
 
-    write_establishment_to_json_file(response)
+    print(response)
+
+
+def get_location_id(search_query="mazel tov", category="restaurants", address="budapest"):
+
+    # Set the endpoint URL with the updated key parameter and search query
+    url = f"https://api.content.tripadvisor.com/api/v1/location/search?key={TRIPADVISOR_API_KEY}&searchQuery={search_query}&category={category}&address={address}&language=en"
+
+    # Set the request headers
+    headers = {"accept": "application/json"}
+
+    # Send the request
+    response = requests.get(url, headers=headers)
+
+    # Extract the desired information from the first object in the 'data' list
+    first_result = response.json()['data'][0]
+    location_id = first_result['location_id']
+
+    return location_id
+
+def get_location_details(location_id: str) -> Dict:
+    """
+    Function to retrieve location details from Tripadvisor API.
+
+    Parameters:
+    location_id (str): location ID for the desired location.
+
+    Returns:
+    results (Dict): dictionary containing values for description, website,
+        rating, phone, longitude, latitude, cuisines, category, opening hours, 
+        and address string.
+    """
+    url = f"https://api.content.tripadvisor.com/api/v1/location/{location_id}/details?key={TRIPADVISOR_API_KEY}&language=en&fields=description,website,rating,phone,longitude,latitude,cuisine,category,opening_hours,address_obj"
+    headers = {"accept": "application/json"}
+    response = requests.get(url, headers=headers)
+    data = response.json()
+    
+    # Extract required fields from data
+    description = data['description']
+    website = data['website']
+    address_string = data['address_obj']['address_string']
+    rating = data['rating']
+    phone = data['phone']
+    longitude = data['longitude']
+    latitude = data['latitude']
+    cuisines = [cuisine['name'] for cuisine in data['cuisine']]
+    category = data['category']['localized_name']
+    hours = data['hours']['weekday_text']
+    
+    # Assemble the results dictionary and return
+    results = {
+        "description": description,
+        "address_string": address_string,
+        "website": website,
+        "rating": rating,
+        "phone": phone,
+        "longitude": longitude,
+        "latitude": latitude,
+        "cuisines": cuisines,
+        "category": category,
+        "hours": hours
+    }
+    
+    print(results)
+    return results
 
 def write_establishment_to_json_file(response):
+
     with open('stores.json', 'r') as f:
         data = json.load(f)
 
