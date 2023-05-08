@@ -32,7 +32,7 @@ def get_establishments(user_input: str) -> str:
             for field in fields:
                 if field not in my_dict:
                     continue
-                if search_string in my_dict[field]:
+                if my_dict[field] is not None and search_string in my_dict[field]:
                     return True
             return False
         
