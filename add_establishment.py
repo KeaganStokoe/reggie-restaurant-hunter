@@ -202,7 +202,7 @@ def write_establishment_to_json_file(new_data: Dict):
     with open('stores.json', 'w') as f:
         json.dump(data, f, indent=2)
 
-    print('Data updated')
+    print('Data successfully updated')
 
 def add_location(user_input:str):
     name = get_location_name(user_input)
@@ -212,3 +212,4 @@ def add_location(user_input:str):
     location_details = get_location_details(location_id)
     print("Details retrieved")
     write_establishment_to_json_file(location_details)
+    return True
