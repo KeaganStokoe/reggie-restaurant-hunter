@@ -144,9 +144,16 @@ def get_location_id(search_query, category="restaurants", address="budapest"):  
     # Send the request
     response = requests.get(url, headers=headers)
 
-    # Extract the desired information from the first object in the 'data' list
-    first_result = response.json()['data'][0]
-    location_id = first_result['location_id']
+# Check if response is not empty before extracting the data
+    if response.status_code != 200 or "data" not in response.json():
+        return None
+
+	# Extract the desired information from the first object in the 'data' list
+    try:
+        first_result = response.json()['data'][0]
+        location_id = first_result['location_id']
+    except (KeyError, IndexError):
+        return ''
 
     return location_id
 
