@@ -29,12 +29,12 @@ def add_establishment_process_step(message):
     try:
         bot.reply_to(message, "👨‍🍳 Chef's kiss! 🤤 I'm adding it to your list. I'll pop you a message when I'm done 🤞")
         url = "https://fastapi-production-d559.up.railway.app/add_establishment/"
-        data = {"term": establishment_name}
-        response = requests.post(url, json=data)
+        query = {"name": establishment_name}  # Update the query to include the missing name field
+        response = requests.post(url, json=query)
         if response.status_code == 200:
             bot.reply_to(message, f"🙌 {establishment_name} has been added to your list!")
         else:
-            print(f"An error occurred: {response.status_code}")
+            print(f"An error occurred: {response.json()}")
     except Exception as e:
         # Send an error message back to the user
         bot.reply_to(message, "Oops! 🙊 Something went wrong when I tried adding this restaurant. Try again later?")
